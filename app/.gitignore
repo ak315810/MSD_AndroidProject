@@ -1,0 +1,30 @@
+# Gradle
+.gradle/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Local configuration
+local.properties
+
+# Android Studio / IntelliJ
+.idea/caches/
+.idea/libraries/
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/usage.statistics.xml
+.idea/shelf/
+*.iml
+*.ipr
+*.iws
+
+# Android build outputs
+*.apk
+*.aab
+
+# Signing keys and credentials
+*.jks
+*.keystore
+
+# Operating system files
+.DS_Store
+Thumbs.db
