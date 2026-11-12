@@ -59,4 +59,10 @@ dependencies {
 
     // WorkManager (background sync with backoff)
     implementation(libs.androidx.work.runtime.ktx)
-}
+
+    implementation(libs.androidx.compose.material.icons.extended)
+
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")}
