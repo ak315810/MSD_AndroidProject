@@ -8,7 +8,9 @@ import androidx.compose.runtime.Composable
 fun BottomNavigationBar(
     currentRoute: String?,
     onHomeClick: () -> Unit,
-    onGroupsClick: () -> Unit
+    onGroupsClick: () -> Unit,
+    onNotificationsClick: () -> Unit,
+    onProfileClick: () -> Unit
 ) {
     NavigationBar {
 
@@ -24,6 +26,22 @@ fun BottomNavigationBar(
             onClick = onGroupsClick,
             icon = { Text("☷") },
             label = { Text("Groups") }
+        )
+
+        NavigationBarItem(
+            selected = currentRoute == "notifications",
+            onClick = onNotificationsClick,
+            enabled = false,
+            icon = { Text("♧") },
+            label = { Text("Notifications") }
+        )
+
+        NavigationBarItem(
+            selected = currentRoute == "profile",
+            onClick = onProfileClick,
+            enabled = false,
+            icon = { Text("⚙") },
+            label = { Text("Profile") }
         )
     }
 }
