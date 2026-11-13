@@ -53,6 +53,15 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
+
+    // Navigation between screens
     implementation("androidx.navigation:navigation-compose:2.10.2")
+
+    // Room Database (local offline storage)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+
+    // WorkManager (background sync with backoff)
+    implementation(libs.androidx.work.runtime.ktx)
 
 }
