@@ -19,7 +19,7 @@ fun AddGroupScreen(
     var groupName by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
-    val isValid = groupName.isNotBlank()
+    val isValid = isValidGroupName(groupName)
 
     Column(
         modifier = Modifier
