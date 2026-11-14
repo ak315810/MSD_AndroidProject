@@ -58,7 +58,6 @@ dependencies {
     // Navigation between screens
     implementation("androidx.navigation:navigation-compose:2.10.2")
 
-
     // Room Database (local offline storage)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
