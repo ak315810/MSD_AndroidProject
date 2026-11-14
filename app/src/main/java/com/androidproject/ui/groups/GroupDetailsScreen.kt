@@ -107,7 +107,6 @@ private fun ExpenseItem(
                     text = stringResource(R.string.paid_by, expense.paidBy),
                     style = MaterialTheme.typography.bodySmall
                 )
-                // The app must show whether a request is pending, successful or failed
                 when (expense.syncStatus) {
                     SyncStatus.PENDING -> Text(
                         text = stringResource(R.string.pending_sync),

@@ -17,6 +17,16 @@ import com.androidproject.ui.groups.HomeScreen
 import com.androidproject.ui.groups.MyGroupsScreen
 import com.androidproject.ui.groups.AddGroupScreen
 
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import com.androidproject.ui.groups.GROUP_ID_ARG
+import com.androidproject.ui.groups.GroupDetailsRoute
+import com.androidproject.ui.groups.GroupSettingsRoute
+
+// S9 (group details) and S11 (group settings)
+private const val GROUP_DETAILS_ROUTE = "group/{$GROUP_ID_ARG}"
+private const val GROUP_SETTINGS_ROUTE = "group/{$GROUP_ID_ARG}/settings"
 @Composable
 fun AppNavigation() {
 
@@ -32,6 +42,13 @@ fun AppNavigation() {
 
     val backStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry.value?.destination?.route
+
+    val isGroupDetailFlow = currentRoute?.startsWith("group/") == true
+
+    val groupIdArguments = listOf(
+        navArgument(GROUP_ID_ARG) { type = NavType.StringType }
+    )
+
 
     fun navigateToTab(route: String) {
         if (currentRoute != route) {
@@ -72,7 +89,7 @@ fun AppNavigation() {
         NavHost(
             navController = navController,
             startDestination = "home",
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding).consumeWindowInsets(innerPadding)
         ) {
 
             composable("home") {
@@ -89,9 +106,8 @@ fun AppNavigation() {
             composable("groups") {
                 MyGroupsScreen(
                     groups = groups,
-                    onGroupClick = { groupId ->
-                        // TODO: Navigate to S9
-                        // when Marianna's screen is ready.
+                    onGroupClick = {  groupId ->
+                        navController.navigate("group/$groupId")
                     },
                     onAddGroupClick = {
                         navController.navigate("add_group")
@@ -117,6 +133,36 @@ fun AppNavigation() {
                     },
                     onCancel = {
                         navController.popBackStack()
+                    }
+                )
+            }
+            // S9: group details
+            composable(
+                route = GROUP_DETAILS_ROUTE,
+                arguments = groupIdArguments
+            ) { entry ->
+                val groupId = entry.arguments?.getString(GROUP_ID_ARG).orEmpty()
+
+                GroupDetailsRoute(
+                    onBack = { navController.popBackStack() },
+                    onOpenSettings = { navController.navigate("group/$groupId/settings") },
+                    onAddExpense = {
+                        // TODO: navigate to S10 (add expense) when it is merged
+                    }
+                )
+            }
+            // S11: group settings
+            composable(
+                route = GROUP_SETTINGS_ROUTE,
+                arguments = groupIdArguments
+            ) { entry ->
+                val groupId = entry.arguments?.getString(GROUP_ID_ARG).orEmpty()
+
+                GroupSettingsRoute(
+                    onBack = { navController.popBackStack() },
+                    onGroupDeleted = {
+                        groups.removeAll { it.id.toString() == groupId }
+                        navController.popBackStack("groups", inclusive = false)
                     }
                 )
             }
