@@ -24,6 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,6 +57,16 @@ fun NotificationSettingsScreen(
             TopAppBar(
                 title = {
                     Text("Notification Settings")
+                },
+                navigationIcon = {
+                    androidx.compose.material3.IconButton(
+                        onClick = onBackClick
+                    ) {
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Go back"
+                        )
+                    }
                 }
             )
         }
