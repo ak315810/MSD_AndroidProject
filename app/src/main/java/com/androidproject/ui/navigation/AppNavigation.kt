@@ -180,8 +180,8 @@ fun AppNavigation() {
 
             composable("add_group") {
                 AddGroupScreen(
-                    onCreateGroup = { name, _ ->
-                        groupsViewModel.addGroup(name)
+                    onCreateGroup = { name, description ->
+                        groupsViewModel.addGroup(name, description)
                         navController.popBackStack()
                     },
                     onCancel = {

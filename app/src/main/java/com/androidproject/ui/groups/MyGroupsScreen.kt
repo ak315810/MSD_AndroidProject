@@ -17,7 +17,8 @@ import com.androidproject.ui.theme.AndroidProjectTheme
 data class Group(
     val id: Int,
     val name: String,
-    val members: Int
+    val members: Int,
+    val description: String = ""
 )
 
 @Composable
@@ -107,6 +108,14 @@ fun MyGroupsScreen(
                                     text = group.name,
                                     style = MaterialTheme.typography.titleMedium
                                 )
+
+                                if (group.description.isNotBlank()) {
+                                    Text(
+                                        text = group.description,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        maxLines = 1
+                                    )
+                                }
 
                                 Text(
                                     text = "${group.members} members",

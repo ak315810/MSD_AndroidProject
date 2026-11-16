@@ -19,10 +19,10 @@ class GroupsViewModel : ViewModel() {
     )
     val groups: StateFlow<List<Group>> = _groups.asStateFlow()
 
-    fun addGroup(name: String) {
+    fun addGroup(name: String, description: String = "") {
         _groups.update { current ->
             val newId = (current.maxOfOrNull { it.id } ?: 0) + 1
-            current + Group(id = newId, name = name, members = 1)
+            current + Group(id = newId, name = name, members = 1, description = description)
         }
     }
 

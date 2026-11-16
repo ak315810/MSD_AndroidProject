@@ -18,6 +18,14 @@ class GroupsViewModelTest {
     }
 
     @Test
+    fun addGroup_keepsDescription() {
+        val viewModel = GroupsViewModel()
+        viewModel.addGroup("Ski Trip", "Andorra, February")
+
+        assertEquals("Andorra, February", viewModel.groups.value.last().description)
+    }
+
+    @Test
     fun removeGroup_removesById() {
         val viewModel = GroupsViewModel()
         viewModel.removeGroup("2")
