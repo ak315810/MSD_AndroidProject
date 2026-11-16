@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">AndroidProject</string>
+
+    <string name="group_details_title">Group details</string>
+    <string name="loading_text">Loading expenses...</string>
+    <string name="empty_expenses">No expenses recorded in this group yet.</string>
+    <string name="add_expense_button">Add expense</string>
+    <string name="offline_banner_message">Offline - showing saved data - %d pending synchronization</string>
+    <string name="back">Back</string>
+    <string name="settings">Settings</string>
+    <string name="add_expense_cd">Add expense</string>
+    <string name="paid_by">Paid by: %1$s</string>
+    <string name="pending_sync">Pending sync</string>
+    <string name="sync_failed">Sync failed</string>
+    <string name="amount_format">%1$.2f kr.</string>
+    <string name="group_settings_title">Group settings</string>
+    <string name="group_name_label">Group name</string>
+    <string name="group_name_error">The group name cannot be empty</string>
+    <string name="group_description_label">Description</string>
+    <string name="participants_title">Participants</string>
+    <string name="new_participant_label">New participant name</string>
+    <string name="add_participant">Add</string>
+    <string name="remove_participant">Remove participant</string>
+    <string name="save_changes">Save changes</string>
+    <string name="delete_group">Delete / Leave group</string>
+    <string name="delete_group_title">Delete this group?</string>
+    <string name="delete_group_message">This action cannot be undone.</string>
+    <string name="confirm_delete">Delete</string>
+    <string name="cancel">Cancel</string>
 </resources>
