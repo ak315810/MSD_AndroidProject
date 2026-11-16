@@ -1,4 +1,3 @@
-
 package com.androidproject.ui.notifications
 
 import androidx.compose.foundation.layout.Arrangement
