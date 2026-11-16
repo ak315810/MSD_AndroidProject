@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -13,10 +14,11 @@ fun AddExpenseScreen(
     onSaveExpense: (description: String, amount: Double) -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    var amountText by remember { mutableStateOf("") }
-    var isAmountError by remember { mutableStateOf(false) }
+    // rememberSaveable so the form is not cleared when the phone is rotated
+    var amountText by rememberSaveable { mutableStateOf("") }
+    var isAmountError by rememberSaveable { mutableStateOf(false) }
 
-    var description by remember { mutableStateOf("") }
+    var description by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -44,8 +46,8 @@ fun AddExpenseScreen(
                 // no -values
                 if (!newValue.contains("-")) {
                     amountText = newValue
-                    // validate: is the number correct
-                    isAmountError = newValue.isNotEmpty() && newValue.toDoubleOrNull() == null
+                    // validate right away, 0 is not a valid amount either (NFR-U2)
+                    isAmountError = newValue.isNotEmpty() && parseAmount(newValue) == null
                 }
             },
             label = { Text("Amount") },
@@ -63,14 +65,15 @@ fun AddExpenseScreen(
 
         Button(
             onClick = {
-                val amount = amountText.toDoubleOrNull()
-                if (amount != null && amount > 0 && !isAmountError) {
-                    onSaveExpense(description, amount)
+                val amount = parseAmount(amountText)
+                if (amount != null && description.isNotBlank()) {
+                    onSaveExpense(description.trim(), amount)
                     onNavigateBack()
                 } else {
-                    isAmountError = true
+                    isAmountError = amount == null
                 }
             },
+            enabled = description.isNotBlank() && parseAmount(amountText) != null,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
@@ -78,4 +81,10 @@ fun AddExpenseScreen(
             Text("Save expense")
         }
     }
+}
+
+// Danish keyboards type "12,50", so accept a comma as decimal separator
+internal fun parseAmount(text: String): Double? {
+    val value = text.trim().replace(',', '.').toDoubleOrNull() ?: return null
+    return if (value > 0) value else null
 }

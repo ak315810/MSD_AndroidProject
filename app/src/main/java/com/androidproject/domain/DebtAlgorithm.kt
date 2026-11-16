@@ -1,5 +1,6 @@
 package com.androidproject.domain
 
+import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.round
 
@@ -27,6 +28,12 @@ class DebtAlgorithm {
 
         for (expense in expenses) {
             if (expense.splits.isEmpty()) continue
+
+            // If the shares don't add up to the amount, part of the expense would be ignored
+            // and the balances would no longer sum to zero
+            require(abs(expense.splits.values.sum() - expense.amount) < 0.01) {
+                "Splits (${expense.splits.values.sum()}) do not add up to amount ${expense.amount}"
+            }
 
             balances[expense.payerId] = balances.getOrDefault(expense.payerId, 0.0) + expense.amount
 
