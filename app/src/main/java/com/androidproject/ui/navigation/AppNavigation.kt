@@ -4,15 +4,17 @@ package com.androidproject.ui.navigation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 
-import com.androidproject.ui.groups.Group
+import com.androidproject.ui.groups.GroupsViewModel
 import com.androidproject.ui.groups.HomeScreen
 import com.androidproject.ui.groups.MyGroupsScreen
 import com.androidproject.ui.groups.AddGroupScreen
@@ -51,18 +53,12 @@ fun AppNavigation() {
         }
     }
 
-    val groups = remember {
-        mutableStateListOf(
-            Group(1, "Erasmus Flat", 4),
-            Group(2, "Copenhagen Trip", 6),
-            Group(3, "Birthday Party", 8)
-        )
-    }
+    // created here (NavHost level) so every screen shares the same instance
+    val groupsViewModel: GroupsViewModel = viewModel()
+    val groups by groupsViewModel.groups.collectAsStateWithLifecycle()
 
     val backStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry.value?.destination?.route
-
-    val isGroupDetailFlow = currentRoute?.startsWith("group/") == true
 
     val groupIdArguments = listOf(
         navArgument(GROUP_ID_ARG) { type = NavType.StringType }
@@ -184,18 +180,8 @@ fun AppNavigation() {
 
             composable("add_group") {
                 AddGroupScreen(
-                    onCreateGroup = { name, description ->
-                        val newId =
-                            (groups.maxOfOrNull { it.id } ?: 0) + 1
-
-                        groups.add(
-                            Group(
-                                id = newId,
-                                name = name,
-                                members = 1
-                            )
-                        )
-
+                    onCreateGroup = { name, _ ->
+                        groupsViewModel.addGroup(name)
                         navController.popBackStack()
                     },
                     onCancel = {
@@ -228,7 +214,7 @@ fun AppNavigation() {
                 GroupSettingsRoute(
                     onBack = { navController.popBackStack() },
                     onGroupDeleted = {
-                        groups.removeAll { it.id.toString() == groupId }
+                        groupsViewModel.removeGroup(groupId)
                         navController.popBackStack("groups", inclusive = false)
                     }
                 )
