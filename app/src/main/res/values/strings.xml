@@ -67,4 +67,9 @@
     <string name="save">Save</string>
     <string name="profile_name_updated">Name updated</string>
     <string name="profile_password_changed">Password changed</string>
+    <string name="duplicate_title">Possible duplicate</string>
+    <string name="duplicate_message">An expense with the same description, amount and payer was added recently. Are you sure it is not the same one?</string>
+    <string name="duplicate_new_expense">New expense</string>
+    <string name="duplicate_existing_expense">Already in the group</string>
+    <string name="duplicate_save_anyway">Save anyway</string>
 </resources>
