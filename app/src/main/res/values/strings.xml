@@ -27,4 +27,44 @@
     <string name="delete_group_message">This action cannot be undone.</string>
     <string name="confirm_delete">Delete</string>
     <string name="cancel">Cancel</string>
+
+    <!-- Auth (S1, S2, S3) and profile (S7) -->
+    <string name="welcome_title">Split expenses with your group</string>
+    <string name="welcome_subtitle">Keep track of shared costs and see who owes whom at a glance.</string>
+    <string name="login_title">Log in</string>
+    <string name="login_subtitle">Welcome back! Log in with your email and password.</string>
+    <string name="login_button">Log in</string>
+    <string name="register_button">Create account</string>
+    <string name="register_title">Create account</string>
+    <string name="create_account_button">Create account</string>
+    <string name="no_account_register">Don\'t have an account? Register</string>
+    <string name="have_account_login">Already have an account? Log in</string>
+    <string name="name_label">Full name</string>
+    <string name="email_label">Email</string>
+    <string name="password_label">Password</string>
+    <string name="confirm_password_label">Confirm password</string>
+    <string name="current_password_label">Current password</string>
+    <string name="new_password_label">New password</string>
+    <string name="password_hint">At least 8 characters, with letters and numbers</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="error_email">Enter a valid email address</string>
+    <string name="error_name">Name must have at least 2 characters</string>
+    <string name="error_password">Use at least 8 characters, with letters and numbers</string>
+    <string name="error_password_mismatch">Passwords do not match</string>
+    <string name="error_current_password_empty">Enter your current password</string>
+    <string name="error_same_password">The new password must be different from the current one</string>
+    <string name="error_invalid_credentials">Wrong email or password</string>
+    <string name="error_email_taken">An account with this email already exists</string>
+    <string name="error_wrong_password">Current password is not correct</string>
+    <string name="error_session_expired">Your session has expired, please log in again</string>
+    <string name="profile_title">Profile</string>
+    <string name="edit_name">Edit name</string>
+    <string name="change_password">Change password</string>
+    <string name="logout">Log out</string>
+    <string name="logout_title">Log out?</string>
+    <string name="logout_message">You will need to log in again to see your groups.</string>
+    <string name="save">Save</string>
+    <string name="profile_name_updated">Name updated</string>
+    <string name="profile_password_changed">Password changed</string>
 </resources>

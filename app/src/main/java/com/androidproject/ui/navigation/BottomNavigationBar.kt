@@ -39,7 +39,6 @@ fun BottomNavigationBar(
         NavigationBarItem(
             selected = currentRoute == "profile",
             onClick = onProfileClick,
-            enabled = false,
             icon = { Text("⚙") },
             label = { Text("Profile") }
         )

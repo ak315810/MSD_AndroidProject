@@ -18,11 +18,20 @@ import com.androidproject.ui.groups.MyGroupsScreen
 import com.androidproject.ui.groups.AddGroupScreen
 
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.androidproject.ui.groups.GROUP_ID_ARG
 import com.androidproject.ui.groups.GroupDetailsRoute
 import com.androidproject.ui.groups.GroupSettingsRoute
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.navigation
+import com.androidproject.data.AuthRepository
+import com.androidproject.ui.auth.AuthRoutes
+import com.androidproject.ui.auth.LoginRoute
+import com.androidproject.ui.auth.ProfileRoute
+import com.androidproject.ui.auth.RegisterRoute
+import com.androidproject.ui.auth.WelcomeScreen
 
 // S9 (group details) and S11 (group settings)
 private const val GROUP_DETAILS_ROUTE = "group/{$GROUP_ID_ARG}"
@@ -31,6 +40,16 @@ private const val GROUP_SETTINGS_ROUTE = "group/{$GROUP_ID_ARG}/settings"
 fun AppNavigation() {
 
     val navController = rememberNavController()
+
+    // Skip the welcome flow when a saved session exists (decided once, at startup)
+    val context = LocalContext.current
+    val startDestination = remember {
+        if (AuthRepository.getInstance(context.applicationContext).isLoggedIn()) {
+            "home"
+        } else {
+            AuthRoutes.GRAPH
+        }
+    }
 
     val groups = remember {
         mutableStateListOf(
@@ -64,7 +83,11 @@ fun AppNavigation() {
 
     Scaffold(
         bottomBar = {
-            if (currentRoute != "add_group") {
+            // currentRoute is null for a moment on start-up, so wait for it before showing the bar
+            if (currentRoute != null &&
+                currentRoute != "add_group" &&
+                currentRoute !in AuthRoutes.authFlow
+            ) {
 
                 BottomNavigationBar(
                     currentRoute = currentRoute,
@@ -78,7 +101,7 @@ fun AppNavigation() {
                         // TODO: Connect S6 when Ania finishes it
                     },
                     onProfileClick = {
-                        // TODO: Connect S7 when Diego finishes it
+                        navigateToTab(AuthRoutes.PROFILE)
                     }
                 )
 
@@ -88,9 +111,53 @@ fun AppNavigation() {
 
         NavHost(
             navController = navController,
-            startDestination = "home",
+            startDestination = startDestination,
             modifier = Modifier.padding(innerPadding).consumeWindowInsets(innerPadding)
         ) {
+
+            // S1-S3 as a nested graph, so it can be removed from the back stack as one block
+            // after login (back from Home should not return to the login screen)
+            navigation(startDestination = AuthRoutes.WELCOME, route = AuthRoutes.GRAPH) {
+                composable(AuthRoutes.WELCOME) {
+                    WelcomeScreen(
+                        onLoginClick = { navController.navigate(AuthRoutes.LOGIN) },
+                        onRegisterClick = { navController.navigate(AuthRoutes.REGISTER) }
+                    )
+                }
+                composable(AuthRoutes.LOGIN) {
+                    LoginRoute(
+                        onBack = { navController.popBackStack() },
+                        onLoggedIn = { navController.navigateToHomeClearingAuth() },
+                        onRegisterClick = {
+                            navController.navigate(AuthRoutes.REGISTER) {
+                                popUpTo(AuthRoutes.WELCOME)
+                            }
+                        }
+                    )
+                }
+                composable(AuthRoutes.REGISTER) {
+                    RegisterRoute(
+                        onBack = { navController.popBackStack() },
+                        onRegistered = { navController.navigateToHomeClearingAuth() },
+                        onLoginClick = {
+                            navController.navigate(AuthRoutes.LOGIN) {
+                                popUpTo(AuthRoutes.WELCOME)
+                            }
+                        }
+                    )
+                }
+            }
+
+            // S7: profile settings
+            composable(AuthRoutes.PROFILE) {
+                ProfileRoute(
+                    onLoggedOut = {
+                        navController.navigate(AuthRoutes.GRAPH) {
+                            popUpTo(navController.graph.id) { inclusive = true }
+                        }
+                    }
+                )
+            }
 
             composable("home") {
                 HomeScreen(
@@ -170,6 +237,12 @@ fun AppNavigation() {
     }
 }
 
+
+private fun NavHostController.navigateToHomeClearingAuth() {
+    navigate("home") {
+        popUpTo(AuthRoutes.GRAPH) { inclusive = true }
+    }
+}
 
 @androidx.compose.ui.tooling.preview.Preview(
     showBackground = true,
