@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# IDE folders created when a subfolder is opened as its own project
+app/.idea/
+**/java/**/.idea/
