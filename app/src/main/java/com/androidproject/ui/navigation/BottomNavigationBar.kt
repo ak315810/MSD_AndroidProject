@@ -28,10 +28,10 @@ fun BottomNavigationBar(
             label = { Text("Groups") }
         )
 
+
         NavigationBarItem(
             selected = currentRoute == "notifications",
             onClick = onNotificationsClick,
-            enabled = false,
             icon = { Text("♧") },
             label = { Text("Notifications") }
         )
@@ -39,9 +39,9 @@ fun BottomNavigationBar(
         NavigationBarItem(
             selected = currentRoute == "profile",
             onClick = onProfileClick,
-            enabled = false,
             icon = { Text("⚙") },
             label = { Text("Profile") }
         )
+
     }
 }
