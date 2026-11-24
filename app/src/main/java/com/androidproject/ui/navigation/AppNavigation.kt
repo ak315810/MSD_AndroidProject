@@ -2,6 +2,7 @@
 package com.androidproject.ui.navigation
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -9,6 +10,10 @@ import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -18,11 +23,7 @@ import com.androidproject.ui.groups.GroupsViewModel
 import com.androidproject.ui.groups.HomeScreen
 import com.androidproject.ui.groups.MyGroupsScreen
 import com.androidproject.ui.groups.AddGroupScreen
-
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 import com.androidproject.ui.groups.GROUP_ID_ARG
 import com.androidproject.ui.groups.GroupDetailsRoute
 import com.androidproject.ui.groups.GroupSettingsRoute
@@ -35,9 +36,16 @@ import com.androidproject.ui.auth.ProfileRoute
 import com.androidproject.ui.auth.RegisterRoute
 import com.androidproject.ui.auth.WelcomeScreen
 
-// S9 (group details) and S11 (group settings)
+import com.androidproject.ui.notifications.NotificationsScreen
+import com.androidproject.ui.notifications.NotificationSettingsScreen
+import com.androidproject.ui.notifications.RepaymentReminderScreen
+
+import com.androidproject.ui.theme.AndroidProjectTheme
+
+// Group routes (S9 and S11)
 private const val GROUP_DETAILS_ROUTE = "group/{$GROUP_ID_ARG}"
 private const val GROUP_SETTINGS_ROUTE = "group/{$GROUP_ID_ARG}/settings"
+
 @Composable
 fun AppNavigation() {
 
@@ -57,14 +65,17 @@ fun AppNavigation() {
     val groupsViewModel: GroupsViewModel = viewModel()
     val groups by groupsViewModel.groups.collectAsStateWithLifecycle()
 
+    // Observe the current destination
     val backStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry.value?.destination?.route
 
     val groupIdArguments = listOf(
-        navArgument(GROUP_ID_ARG) { type = NavType.StringType }
+        navArgument(GROUP_ID_ARG) {
+            type = NavType.StringType
+        }
     )
 
-
+    // Navigation between main tabs
     fun navigateToTab(route: String) {
         if (currentRoute != route) {
             navController.navigate(route) {
@@ -79,28 +90,30 @@ fun AppNavigation() {
 
     Scaffold(
         bottomBar = {
-            // currentRoute is null for a moment on start-up, so wait for it before showing the bar
+            // Hidden on secondary screens and the auth flow; currentRoute is null for a moment on start-up
             if (currentRoute != null &&
-                currentRoute != "add_group" &&
+                currentRoute !in listOf("add_group", "notification_settings", "repayment_reminder") &&
                 currentRoute !in AuthRoutes.authFlow
             ) {
-
                 BottomNavigationBar(
                     currentRoute = currentRoute,
+
                     onHomeClick = {
                         navigateToTab("home")
                     },
+
                     onGroupsClick = {
                         navigateToTab("groups")
                     },
+
                     onNotificationsClick = {
-                        // TODO: Connect S6 when Ania finishes it
+                        navigateToTab("notifications")
                     },
+
                     onProfileClick = {
                         navigateToTab(AuthRoutes.PROFILE)
                     }
                 )
-
             }
         }
     ) { innerPadding ->
@@ -155,6 +168,7 @@ fun AppNavigation() {
                 )
             }
 
+            // S4 - Home
             composable("home") {
                 HomeScreen(
                     onMyGroupsClick = {
@@ -166,56 +180,117 @@ fun AppNavigation() {
                 )
             }
 
+            // S5 - My Groups
             composable("groups") {
                 MyGroupsScreen(
                     groups = groups,
-                    onGroupClick = {  groupId ->
+
+                    onGroupClick = { groupId ->
                         navController.navigate("group/$groupId")
                     },
+
                     onAddGroupClick = {
                         navController.navigate("add_group")
                     }
                 )
             }
 
+            // S8 - Add Group
             composable("add_group") {
                 AddGroupScreen(
                     onCreateGroup = { name, description ->
                         groupsViewModel.addGroup(name, description)
                         navController.popBackStack()
                     },
+
                     onCancel = {
                         navController.popBackStack()
                     }
                 )
             }
-            // S9: group details
+
+            // S9 - Group Details
             composable(
                 route = GROUP_DETAILS_ROUTE,
                 arguments = groupIdArguments
             ) { entry ->
-                val groupId = entry.arguments?.getString(GROUP_ID_ARG).orEmpty()
+
+                val groupId =
+                    entry.arguments?.getString(GROUP_ID_ARG).orEmpty()
 
                 GroupDetailsRoute(
-                    onBack = { navController.popBackStack() },
-                    onOpenSettings = { navController.navigate("group/$groupId/settings") },
+                    onBack = {
+                        navController.popBackStack()
+                    },
+
+                    onOpenSettings = {
+                        navController.navigate(
+                            "group/$groupId/settings"
+                        )
+                    },
+
                     onAddExpense = {
-                        // TODO: navigate to S10 (add expense) when it is merged
+                        // TODO: Connect S10
                     }
                 )
             }
-            // S11: group settings
+
+            // S11 - Group Settings
             composable(
                 route = GROUP_SETTINGS_ROUTE,
                 arguments = groupIdArguments
             ) { entry ->
-                val groupId = entry.arguments?.getString(GROUP_ID_ARG).orEmpty()
+
+                val groupId =
+                    entry.arguments?.getString(GROUP_ID_ARG).orEmpty()
 
                 GroupSettingsRoute(
-                    onBack = { navController.popBackStack() },
+                    onBack = {
+                        navController.popBackStack()
+                    },
+
                     onGroupDeleted = {
                         groupsViewModel.removeGroup(groupId)
                         navController.popBackStack("groups", inclusive = false)
+                    }
+                )
+            }
+
+            // S6 - Notifications
+            composable("notifications") {
+                NotificationsScreen(
+                    onSettingsClick = {
+                        navController.navigate(
+                            "notification_settings"
+                        )
+                    },
+
+                    onSendReminderClick = {
+                        navController.navigate(
+                            "repayment_reminder"
+                        )
+                    }
+                )
+            }
+
+            // S13 - Notification Settings
+            composable("notification_settings") {
+                NotificationSettingsScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            // S12 - Send Repayment Reminder
+            composable("repayment_reminder") {
+                RepaymentReminderScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+
+                    onReminderSent = {
+                        navController.popBackStack()
                     }
                 )
             }
@@ -230,14 +305,13 @@ private fun NavHostController.navigateToHomeClearingAuth() {
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     showBackground = true,
     showSystemUi = true
 )
 @Composable
 fun AppNavigationPreview() {
-    com.androidproject.ui.theme.AndroidProjectTheme {
+    AndroidProjectTheme {
         AppNavigation()
     }
 }
-

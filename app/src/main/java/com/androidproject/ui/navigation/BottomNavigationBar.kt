@@ -36,10 +36,10 @@ fun BottomNavigationBar(
             label = { Text("Groups") }
         )
 
+
         NavigationBarItem(
             selected = currentRoute == "notifications",
             onClick = onNotificationsClick,
-            enabled = false,
             icon = { Icon(Icons.Filled.Notifications, contentDescription = null) },
             label = { Text("Notifications") }
         )
@@ -50,5 +50,6 @@ fun BottomNavigationBar(
             icon = { Icon(Icons.Filled.Person, contentDescription = null) },
             label = { Text("Profile") }
         )
+
     }
 }
