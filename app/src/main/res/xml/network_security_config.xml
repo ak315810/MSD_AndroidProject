@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- NFR-S2: only HTTPS. Plain HTTP is already blocked by default from Android 9,
+     but our minSdk is 26 so it has to be stated explicitly. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>

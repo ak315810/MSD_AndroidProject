@@ -1,6 +1,11 @@
 
 package com.androidproject.ui.navigation
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 
@@ -12,19 +17,22 @@ fun BottomNavigationBar(
     onNotificationsClick: () -> Unit,
     onProfileClick: () -> Unit
 ) {
+    // Group details/settings (S9, S11) are part of the Groups tab, so keep that tab highlighted there
+    val inGroupsTab = currentRoute == "groups" || currentRoute?.startsWith("group/") == true
+
     NavigationBar {
 
         NavigationBarItem(
             selected = currentRoute == "home",
             onClick = onHomeClick,
-            icon = { Text("⌂") },
+            icon = { Icon(Icons.Filled.Home, contentDescription = null) },
             label = { Text("Home") }
         )
 
         NavigationBarItem(
-            selected = currentRoute == "groups",
+            selected = inGroupsTab,
             onClick = onGroupsClick,
-            icon = { Text("☷") },
+            icon = { Icon(Icons.Filled.Groups, contentDescription = null) },
             label = { Text("Groups") }
         )
 
@@ -32,14 +40,14 @@ fun BottomNavigationBar(
         NavigationBarItem(
             selected = currentRoute == "notifications",
             onClick = onNotificationsClick,
-            icon = { Text("♧") },
+            icon = { Icon(Icons.Filled.Notifications, contentDescription = null) },
             label = { Text("Notifications") }
         )
 
         NavigationBarItem(
             selected = currentRoute == "profile",
             onClick = onProfileClick,
-            icon = { Text("⚙") },
+            icon = { Icon(Icons.Filled.Person, contentDescription = null) },
             label = { Text("Profile") }
         )
 
